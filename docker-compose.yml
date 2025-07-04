@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: solvik_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: solvik_saas
+      POSTGRES_USER: solvik_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-solvik_secure_password_2024}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - solvik_network
+    healthcheck:
+      test: ["CMD-EXEC", "pg_isready -U solvik_user -d solvik_saas"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  app:
+    build: .
+    container_name: solvik_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://solvik_user:${POSTGRES_PASSWORD:-solvik_secure_password_2024}@postgres:5432/solvik_saas
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - solvik_network
+    volumes:
+      - ./public/uploads:/app/public/uploads
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  solvik_network:
+    driver: bridge
