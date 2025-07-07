@@ -17,7 +17,7 @@ services:
     networks:
       - solvik_network
     healthcheck:
-      test: ["CMD-EXEC", "pg_isready -U solvik_user -d solvik_saas"]
+      test: ["CMD", "pg_isready", "-U", "solvik_user", "-d", "solvik_saas"]
       interval: 30s
       timeout: 10s
       retries: 3
