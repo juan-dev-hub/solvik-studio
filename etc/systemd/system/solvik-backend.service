@@ -1,0 +1,14 @@
+[Unit]
+Description=Solvik Backend
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/solvik-backend/backend
+ExecStart=/usr/bin/docker-compose up
+Restart=on-failure
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
