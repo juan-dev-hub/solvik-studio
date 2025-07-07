@@ -13,6 +13,9 @@ const nextConfig = {
   },
 -  output: 'standalone',
 +  output: 'export',
+  // Remove rewrites for static export
+  /*
+  */
 };
 
 module.exports = nextConfig;
