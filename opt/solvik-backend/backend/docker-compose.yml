@@ -10,7 +10,7 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    command: sh -c "npm install && node simple-server.js"
+    command: sh -c "npm install cors express && node simple-server.js"
     environment:
       - NODE_ENV=development
       - PORT=8000
