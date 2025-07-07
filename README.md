@@ -1,164 +1,101 @@
-# Solvik SaaS - Landing Page Builder
+# Solvik SaaS - Separado Frontend/Backend
 
 🚀 **Plataforma SaaS para crear landing pages ultra simples sin código**
-
-## ¿Qué es Solvik?
-
-Solvik es una plataforma que permite a pequeños negocios crear su landing page en menos de 5 minutos, sin conocimientos técnicos.
-
-### ✨ Características principales
-
-- **Súper Simple**: Interfaz como "editar perfil" de Facebook
-- **Multiidioma**: Español, Inglés y Finés automáticamente
-- **Hosting Incluido**: Alojado en Finlandia con máxima privacidad
-- **Subdominio Gratis**: `tunegocio.solvik.app`
-- **Colores Personalizados**: Cambia la paleta de colores
-- **Imágenes Ilimitadas**: Sube todas las fotos que quieras
-
-## 🛠️ Stack Tecnológico
-
-- **Frontend**: Next.js 13 + React + TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Base de Datos**: PostgreSQL + Prisma ORM
-- **Autenticación**: NextAuth.js + WhatsApp OTP
-- **Hosting**: Vercel (frontend) + Supabase (database)
-- **Pagos**: Lemon Squeezy
-- **DNS**: Cloudflare
-
-## 🚀 Instalación Local
-
-1. **Clonar el repositorio**
-```bash
-git clone https://github.com/tu-usuario/solvik-saas.git
-cd solvik-saas
-```
-
-2. **Instalar dependencias**
-```bash
-npm install
-```
-
-3. **Configurar variables de entorno**
-```bash
-cp .env.example .env
-```
-
-Edita el archivo `.env` con tus credenciales:
-- Base de datos PostgreSQL
-- Twilio (WhatsApp)
-- Cloudflare
-- Lemon Squeezy
-
-4. **Configurar base de datos**
-```bash
-npx prisma generate
-npx prisma db push
-```
-
-5. **Ejecutar en desarrollo**
-```bash
-npm run dev
-```
 
 ## 📁 Estructura del Proyecto
 
 ```
 solvik-saas/
-├── app/                    # App Router de Next.js
-│   ├── admin/             # Panel de administración
-│   ├── api/               # API Routes
-│   ├── auth/              # Páginas de autenticación
-│   └── landing/           # Landing pages dinámicas
-├── components/            # Componentes reutilizables
-├── lib/                   # Utilidades y servicios
-├── prisma/               # Schema de base de datos
-└── types/                # Tipos de TypeScript
+├── frontend/          # Next.js App (Deploy en Vercel)
+│   ├── app/          # App Router
+│   ├── components/   # Componentes React
+│   ├── lib/         # Utilidades frontend
+│   └── public/      # Assets estáticos
+├── backend/          # Express API (Deploy en UpCloud)
+│   ├── src/         # Código fuente
+│   ├── prisma/      # Base de datos
+│   └── uploads/     # Archivos subidos
+└── shared/          # Código compartido (futuro)
 ```
 
-## 🔧 Configuración de Producción
+## 🚀 Deployment
 
-### Base de Datos (Supabase)
-1. Crear proyecto en [Supabase](https://supabase.com)
-2. Copiar URL de conexión a `DATABASE_URL`
-3. Ejecutar migraciones: `npx prisma db push`
+### Frontend (Vercel)
 
-### WhatsApp OTP (Twilio)
-1. Crear cuenta en [Twilio](https://twilio.com)
-2. Configurar WhatsApp Business API
-3. Agregar credenciales al `.env`
-
-### DNS (Cloudflare)
-1. Configurar dominio en Cloudflare
-2. Crear API token con permisos de DNS
-3. Configurar variables de entorno
-
-### Pagos (Lemon Squeezy)
-1. Crear cuenta en [Lemon Squeezy](https://lemonsqueezy.com)
-2. Configurar productos y webhooks
-3. Agregar API keys
-
-## 🌍 Deployment
-
-### Vercel (Recomendado)
+1. **Conectar repositorio a Vercel**
 ```bash
-npm run build
+cd frontend
 vercel --prod
 ```
 
-### Variables de entorno en Vercel
-Configurar todas las variables del `.env.example` en el dashboard de Vercel.
+2. **Variables de entorno en Vercel**
+```bash
+NEXT_PUBLIC_API_URL=https://tu-backend.upcloud.com
+NEXTAUTH_URL=https://tu-frontend.vercel.app
+NEXTAUTH_SECRET=tu-secret-key
+```
 
-## 📝 Uso
+### Backend (UpCloud)
 
-1. **Registro**: Los usuarios se registran con WhatsApp
-2. **Verificación**: Código OTP por WhatsApp
-3. **Configuración**: Panel simple para editar contenido
-4. **Publicación**: Landing page disponible en `subdominio.solvik.app`
+1. **Conectar al servidor**
+```bash
+ssh root@TU_IP_UPCLOUD
+```
 
-## 🎨 Personalización
+2. **Clonar y deployar backend**
+```bash
+mkdir -p /opt/solvik-backend
+cd /opt/solvik-backend
+git clone https://github.com/tu-usuario/solvik-saas.git .
+cd backend
+cp .env.example .env
+# Editar .env con tus credenciales
+docker-compose up -d
+```
 
-### Colores
-Los usuarios pueden cambiar la paleta de colores desde el panel de administración.
+## 🔧 Desarrollo Local
 
-### Contenido
-Todo el contenido es editable:
-- Textos en 3 idiomas
-- Imágenes (hero, logo, catálogo)
-- Información de contacto
-- Secciones habilitadas/deshabilitadas
+### Backend
+```bash
+cd backend
+npm install
+cp .env.example .env
+# Configurar .env
+npm run dev
+```
 
-## 🔒 Seguridad
+### Frontend
+```bash
+cd frontend
+npm install
+cp .env.example .env
+# Configurar .env
+npm run dev
+```
 
-- Números de WhatsApp encriptados
-- Rate limiting en OTP
-- Validación de archivos subidos
-- Sanitización de inputs
-- HTTPS obligatorio
+## 🌐 URLs
 
-## 📊 Monitoreo
+- **Frontend**: `http://localhost:3000`
+- **Backend**: `http://localhost:8000`
+- **API Health**: `http://localhost:8000/api/health`
 
-- Logs de Prisma habilitados
-- Error tracking con Next.js
-- Métricas de uso en dashboard
+## 📋 Ventajas de la Separación
 
-## 🤝 Contribuir
+✅ **Frontend en Vercel**: CDN global, SSL automático, deploys instantáneos
+✅ **Backend en UpCloud**: Control total, base de datos privada, uploads locales
+✅ **Escalabilidad**: Cada parte escala independientemente
+✅ **Desarrollo**: Equipos pueden trabajar por separado
+✅ **Costos**: Optimización de recursos por servicio
 
-1. Fork el proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
+## 🔄 Migración Completada
 
-## 📄 Licencia
+- ✅ API Routes movidas a Express backend
+- ✅ Frontend adaptado para usar API externa
+- ✅ Auth system refactorizado
+- ✅ Base de datos en backend
+- ✅ File uploads en backend
+- ✅ CORS configurado
+- ✅ Middleware de autenticación
+- ✅ Docker setup para backend
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## 🆘 Soporte
-
-- **Email**: soporte@solvik.app
-- **WhatsApp**: +358 XX XXX XXXX
-- **Documentación**: [docs.solvik.app](https://docs.solvik.app)
-
----
-
-**Hecho con ❤️ en Finlandia 🇫🇮**
+¡Tu proyecto está listo para deployment separado! 🎉
